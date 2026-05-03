@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # Auth Service (Flask)
+  auth-service:
+    image: python:3.11-slim
+    container_name: shopsphere-auth
+    working_dir: /app
+    volumes:
+      - ./authservice:/app
+    ports:
+      - "5000:5000"
+    command: >
+      sh -c "pip install flask flask-cors pyjwt &&
+             python run.py"
+    environment:
+      FLASK_APP: run.py
+      FLASK_ENV: development
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Product Service (FastAPI)
+  product-service:
+    image: python:3.11-slim
+    container_name: shopsphere-products
+    working_dir: /app
+    volumes:
+      - ./productservice:/app
+      - product_db:/app
+    ports:
+      - "8001:8001"
+    command: >
+      sh -c "pip install fastapi uvicorn &&
+             python -m uvicorn main:app --host 0.0.0.0 --port 8001"
+    environment:
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Order Service (FastAPI)
+  order-service:
+    image: python:3.11-slim
+    container_name: shopsphere-orders
+    working_dir: /app
+    volumes:
+      - ./orderservice:/app
+    ports:
+      - "8002:8002"
+    command: >
+      sh -c "pip install fastapi uvicorn &&
+             python -m uvicorn main:app --host 0.0.0.0 --port 8002"
+    environment:
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      auth-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend (Node.js)
+  frontend:
+    image: node:20-alpine
+    container_name: shopsphere-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "npm install &&
+             npm start"
+    environment:
+      REACT_APP_API_URL: http://localhost:3000
+      REACT_APP_AUTH_URL: http://localhost:5000
+      REACT_APP_PRODUCT_URL: http://localhost:8001
+      REACT_APP_ORDER_URL: http://localhost:8002
+    depends_on:
+      - auth-service
+      - product-service
+      - order-service
+
+volumes:
+  product_db:
+    driver: local
+
+networks:
+  default:
+    name: shopsphere-network
+    driver: bridge
