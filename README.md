@@ -56,15 +56,6 @@ docker-compose up
 
 Visit **http://localhost:3000**
 
-## **👤 Demo Users**
-
-| Username | Password | 
-|----------|----------|
-| demo | demo123 |
-| john | john123 |
-| sarah | sarah123 |
-| admin | admin123 |
-
 ## **🛍️ Sample Products**
 
 10 products pre-loaded including Laptop, iPhone 15, Headphones, and more!
