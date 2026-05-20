@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
-import { login as apiLogin, register as apiRegister } from "../auth";
 import "./Login.css";
 
 function Login() {
@@ -77,7 +76,7 @@ function Login() {
         body: JSON.stringify({ username, password })
       });
       
-      const data = await response.json();
+      await response.json();
       setError("✅ Registration successful! Now login.");
       setUsername("");
       setPassword("");
@@ -97,6 +96,12 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-card">
+        <div className="login-hero">
+          <div className="hero-badge">Welcome</div>
+          <div className="hero-icon">🛍️</div>
+          <p>Sign in to browse products, save your cart, and checkout faster.</p>
+        </div>
+
         <div className="login-header">
           <div className="logo-icon">🛒</div>
           <h1>ShopSphere</h1>

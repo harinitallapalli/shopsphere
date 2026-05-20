@@ -29,9 +29,44 @@
   }
 }
 
+.login-hero {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.18), rgba(118, 75, 162, 0.18));
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(102, 126, 234, 0.12);
+  color: #2c5282;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 6px 12px;
+  margin-bottom: 14px;
+}
+
+.hero-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.login-hero p {
+  margin: 0;
+  color: #4a5568;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .login-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .logo-icon {
@@ -305,6 +340,14 @@
 @media (max-width: 600px) {
   .login-card {
     padding: 30px 20px;
+  }
+
+  .login-hero {
+    padding: 16px 16px;
+  }
+
+  .hero-icon {
+    font-size: 36px;
   }
 
   .login-header h1 {

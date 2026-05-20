@@ -6,6 +6,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartMessage, setCartMessage] = useState("");
 
   useEffect(() => {
@@ -44,7 +45,7 @@ function Home() {
         },
         body: JSON.stringify(product)
       });
-      const data = await response.json();
+      await response.json();
       setCartMessage(`✅ ${product.name} added to cart!`);
       setTimeout(() => setCartMessage(""), 3000);
     } catch (err) {
@@ -53,29 +54,58 @@ function Home() {
     }
   };
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const categories = [
+    "All",
+    ...Array.from(new Set(products.map((p) => p.category).filter(Boolean))),
+  ];
+
+  const filteredProducts = products.filter((p) => {
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory =
+      selectedCategory === "All" || p.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="home-container">
-      <div className="home-header">
-        <h1>🏪 Shop Products</h1>
-        <p>Discover our amazing collection</p>
+      <div className="home-hero">
+        <div className="hero-copy">
+          <span className="hero-badge">✨ Fresh drops this week</span>
+          <h1>Shop the things you love</h1>
+          <p>Curated tech, accessories & more — delivered fast.</p>
+        </div>
+        <div className="hero-cta">
+          <button className="btn-primary hero-button">Featured</button>
+        </div>
       </div>
 
       {error && <div className="error-banner">{error}</div>}
       {cartMessage && <div className={`cart-message ${cartMessage.includes('✅') ? 'success' : 'error'}`}>{cartMessage}</div>}
 
-      <div className="search-section">
-        <input
-          type="text"
-          placeholder="🔍 Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+      <div className="search-controls">
+        <div className="search-section">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+        <div className="category-chips">
+          {categories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              className={`category-chip ${selectedCategory === category ? "active" : ""}`}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
@@ -89,21 +119,38 @@ function Home() {
             filteredProducts.map((p, i) => (
               <div key={p.id || i} className="product-card">
                 <div className="product-image">
-                  <div className="product-placeholder">
+                  {p.image_url ? (
+                    <img
+                      src={p.image_url}
+                      alt={p.name}
+                      className="product-img"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.nextSibling.style.display = "block";
+                      }}
+                    />
+                  ) : null}
+                  <div className="product-placeholder" style={{ display: p.image_url ? "none" : "flex" }}>
                     📦
                   </div>
+                  <span className="product-category-badge">{p.category || "Other"}</span>
                 </div>
                 <div className="product-info">
-                  <h3 className="product-name">{p.name}</h3>
+                  <div className="product-heading">
+                    <h3 className="product-name">{p.name}</h3>
+                    <button className="favorite-button" type="button">♡</button>
+                  </div>
                   {p.description && <p className="product-description">{p.description}</p>}
-                  {p.category && <span className="product-category">{p.category}</span>}
-                  <p className="product-price">₹{p.price}</p>
-                  <button
-                    onClick={() => addToCart(p)}
-                    className="btn-add-to-cart"
-                  >
-                    🛒 Add to Cart
-                  </button>
+                  <div className="product-meta">
+                    <p className="product-price">₹{p.price}</p>
+                    <button
+                      onClick={() => addToCart(p)}
+                      className="btn-add-to-cart"
+                    >
+                      🛒 Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             ))

@@ -55,4 +55,6 @@ attachToken(authApi);
 attachToken(productApi);
 attachToken(orderApi);
 
-export default { authApi, productApi, orderApi };
+const apiInstances = { authApi, productApi, orderApi };
+
+export default apiInstances;
