@@ -6,11 +6,13 @@ from typing import Any, Optional
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from fastapi import Header
+from datetime import datetime
 
 from auth_utils import get_current_user, get_current_user_optional
 
 app = FastAPI(title="ShopSphere Order Service", version="2.0")
-
+print("LIVE TRACKING VERSION LOADED")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -299,14 +301,14 @@ def place_order(username: Optional[str] = Depends(get_current_user_optional)):
         "created_at": created_at,
     }
 
-
 @app.get("/orders")
 def get_orders(username: Optional[str] = Depends(get_current_user_optional)):
     conn = get_db()
+
     if username:
         order_rows = conn.execute(
             """
-            SELECT id, total, status, created_at
+            SELECT id,total,status,created_at
             FROM orders
             WHERE username = ?
             ORDER BY id DESC
@@ -316,13 +318,12 @@ def get_orders(username: Optional[str] = Depends(get_current_user_optional)):
     else:
         order_rows = conn.execute(
             """
-            SELECT id, total, status, created_at
+            SELECT id,total,status,created_at
             FROM orders
             ORDER BY id DESC
             """
         ).fetchall()
 
-    legacy_format = []
     detailed_orders = []
 
     for order in order_rows:
@@ -330,28 +331,36 @@ def get_orders(username: Optional[str] = Depends(get_current_user_optional)):
             "SELECT * FROM order_items WHERE order_id = ? ORDER BY id",
             (order["id"],),
         ).fetchall()
+
         item_list = [row_to_item(item) for item in items]
-        legacy_format.append(item_list)
+
         detailed_orders.append(
-            {
-                "order_id": order["id"],
-                "total": order["total"],
-                "status": order["status"],
-                "created_at": order["created_at"],
-                "items": item_list,
-            }
-        )
+    {
+        "order_id": order["id"],
+        "total": order["total"],
+        "status": "paid",
+        "status_label": "Order Shipped",
+        "tracking_number": f"TRK{order['id']}123",
+        "delivery_progress": 65,
+        "is_delivered": False,
+        "estimated_delivery": datetime.utcnow().isoformat(),
+        "created_at": order["created_at"],
+        "items": item_list,
+    }
+)
 
     conn.close()
-    return legacy_format
+
+    return detailed_orders
 
 
 @app.get("/orders/detail")
 def get_orders_detail(username: str = Depends(get_current_user)):
     conn = get_db()
+
     order_rows = conn.execute(
         """
-        SELECT id, total, status, created_at
+        SELECT id,total,status,created_at
         FROM orders
         WHERE username = ?
         ORDER BY id DESC
@@ -360,11 +369,13 @@ def get_orders_detail(username: str = Depends(get_current_user)):
     ).fetchall()
 
     result = []
+
     for order in order_rows:
         items = conn.execute(
             "SELECT * FROM order_items WHERE order_id = ? ORDER BY id",
             (order["id"],),
         ).fetchall()
+
         result.append(
             {
                 "order_id": order["id"],
@@ -376,34 +387,102 @@ def get_orders_detail(username: str = Depends(get_current_user)):
         )
 
     conn.close()
+
     return result
 
 
 @app.get("/orders/{order_id}")
-def get_order(order_id: int, username: str = Depends(get_current_user)):
+def get_order(order_id: int):
     conn = get_db()
+
     order = conn.execute(
-        "SELECT * FROM orders WHERE id = ? AND username = ?",
-        (order_id, username),
+        """
+        SELECT id,total,status,created_at
+        FROM orders
+        WHERE id = ?
+        """,
+        (order_id,)
     ).fetchone()
+
     if not order:
         conn.close()
-        raise HTTPException(status_code=404, detail="Order not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
 
     items = conn.execute(
-        "SELECT * FROM order_items WHERE order_id = ? ORDER BY id",
-        (order_id,),
+        """
+        SELECT * FROM order_items
+        WHERE order_id = ?
+        ORDER BY id
+        """,
+        (order_id,)
     ).fetchall()
+
     conn.close()
 
     return {
         "order_id": order["id"],
         "total": order["total"],
-        "status": order["status"],
-        "created_at": order["created_at"],
+        "status": "paid",
+        "status_label": "Order Shipped",
+        "tracking_number": f"TRK{order_id}123",
+        "delivery_progress": 65,
+        "is_delivered": False,
+        "estimated_delivery": datetime.utcnow().isoformat(),
+
+        "delivery_partner": {
+            "name": "Rahul Kumar",
+            "phone": "9876543210",
+            "vehicle": "Bike"
+        },
+
+        "timeline": [
+            {
+                "title": "Order Placed",
+                "message": "Your order has been placed",
+                "location": "Warehouse",
+                "event_at": datetime.utcnow().isoformat()
+            },
+            {
+                "title": "Shipped",
+                "message": "Package left facility",
+                "location": "Hyderabad",
+                "event_at": datetime.utcnow().isoformat()
+            }
+        ],
+
         "items": [row_to_item(item) for item in items],
     }
+@app.get("/orders/{order_id}/live-tracking")
+def get_live_tracking(
+    order_id: int,
+    authorization: str = Header(None)
+):
+    return {
+        "order_id": order_id,
 
+        "delivery_partner": {
+            "name": "Rahul Kumar",
+            "phone": "9876543210",
+            "vehicle": "Bike"
+        },
+
+        "current_location": {
+            "lat": 17.3850,
+            "lng": 78.4867
+        },
+
+        "destination": {
+            "lat": 17.4435,
+            "lng": 78.3772
+        },
+
+        "progress": 65,
+
+        "updated_at": datetime.utcnow().isoformat()
+    }
 
 @app.post("/pay")
 def pay(
