@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getOrders } from "../orders";
 import "./Orders.css";
 
 function Orders() {
@@ -12,17 +13,18 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:8002/orders");
-      const data = await response.json();
-      setOrders(data);
+      const data = await getOrders();
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error fetching orders:", err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
   };
 
   const calculateTotal = (items) => {
+    if (!Array.isArray(items)) return 0;
     return items.reduce((sum, item) => sum + (item.price || 0), 0);
   };
 
@@ -57,7 +59,7 @@ function Orders() {
               </div>
 
               <div className="order-items">
-                {order.map((item, itemIndex) => (
+                {Array.isArray(order) && order.map((item, itemIndex) => (
                   <div key={itemIndex} className="order-item">
                     <span className="item-name">{item.name}</span>
                     <span className="item-price">₹{item.price}</span>

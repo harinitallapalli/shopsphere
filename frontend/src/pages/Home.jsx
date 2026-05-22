@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { getAllProducts } from "../products";
+import { addToCart as addToCartApi } from "../orders";
+import { useCart } from "../CartContext";
 import "./Home.css";
 
 function Home() {
@@ -8,6 +11,7 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartMessage, setCartMessage] = useState("");
+  const { addToCart: addToCartContext } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -17,9 +21,7 @@ function Home() {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch("http://127.0.0.1:8001/products");
-      if (!response.ok) throw new Error("Fetch failed");
-      const data = await response.json();
+      const data = await getAllProducts();
       setProducts(data || []);
     } catch (err) {
       setError("Failed to load products. Make sure product service is running.");
@@ -32,24 +34,17 @@ function Home() {
   const addToCart = async (product) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("🔐 Please login first!");
+      alert("Please login first!");
       return;
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8002/add-to-cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify(product)
-      });
-      await response.json();
-      setCartMessage(`✅ ${product.name} added to cart!`);
+      await addToCartApi(product);
+      addToCartContext(product);
+      setCartMessage(`${product.name} added to cart!`);
       setTimeout(() => setCartMessage(""), 3000);
     } catch (err) {
-      setCartMessage("❌ Failed to add to cart");
+      setCartMessage("Failed to add to cart");
       setTimeout(() => setCartMessage(""), 3000);
     }
   };
@@ -82,7 +77,7 @@ function Home() {
       </div>
 
       {error && <div className="error-banner">{error}</div>}
-      {cartMessage && <div className={`cart-message ${cartMessage.includes('✅') ? 'success' : 'error'}`}>{cartMessage}</div>}
+      {cartMessage && <div className={`cart-message ${cartMessage.includes('added') ? 'success' : 'error'}`}>{cartMessage}</div>}
 
       <div className="search-controls">
         <div className="search-section">
@@ -156,7 +151,7 @@ function Home() {
             ))
           ) : (
             <div className="no-products">
-              <p>😔 No products found</p>
+              <p>No products found</p>
               {searchTerm && <p>Try a different search term</p>}
             </div>
           )}

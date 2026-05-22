@@ -36,6 +36,15 @@ export const getOrders = async () => {
   }
 };
 
+export const removeFromCart = async (index) => {
+  try {
+    const response = await orderApi.delete(`/cart/${index}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+};
+
 export const processPayment = async () => {
   try {
     const response = await orderApi.post("/pay");

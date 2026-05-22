@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { login as loginApi, register as registerApi } from "../auth";
 import "./Login.css";
 
 function Login() {
@@ -19,69 +20,52 @@ function Login() {
     { username: "admin", password: "admin123" },
   ];
 
-  const handleLogin = async () => {
+  const doLogin = async (user, pass) => {
     setLoading(true);
     setError("");
-    
+
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
-      
-      const data = await response.json();
-      
+      const data = await loginApi(user, pass);
+
       if (data.token) {
-        login(data.token, { username });
-        alert("✅ Login successful!");
+        login(data.token, { username: user });
         navigate("/home");
       } else {
-        setError("❌ Invalid credentials");
+        setError("Invalid credentials");
       }
     } catch (err) {
-      setError("❌ Connection error. Make sure auth service is running.");
+      setError("Connection error. Make sure auth service is running.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleLogin = async () => {
+    await doLogin(username, password);
+  };
+
   const handleDemoLogin = (demoUsername, demoPassword) => {
     setUsername(demoUsername);
     setPassword(demoPassword);
-    setShowDemoUsers(false);
-    
-    setTimeout(() => {
-      handleLogin();
-    }, 100);
+    doLogin(demoUsername, demoPassword);
   };
 
   const handleRegister = async () => {
     if (!username || !password) {
-      setError("❌ Please fill in all fields");
+      setError("Please fill in all fields");
       return;
     }
-    
+
     setLoading(true);
     setError("");
-    
+
     try {
-      const response = await fetch("http://127.0.0.1:5000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
-      
-      await response.json();
-      setError("✅ Registration successful! Now login.");
+      await registerApi(username, password);
+      setError("Registration successful! Now login.");
       setUsername("");
       setPassword("");
     } catch (err) {
-      setError("❌ Registration failed");
+      setError("Registration failed");
     } finally {
       setLoading(false);
     }
@@ -108,7 +92,7 @@ function Login() {
           <p>Welcome back</p>
         </div>
 
-        {error && <div className={`error-message ${error.includes('✅') ? 'success' : ''}`}>{error}</div>}
+        {error && <div className={`error-message ${error.includes('successful') ? 'success' : ''}`}>{error}</div>}
 
         <div className="login-form">
           <div className="form-group">

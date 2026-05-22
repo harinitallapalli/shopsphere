@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../CartContext";
+import { getCart, placeOrder, removeFromCart as removeFromCartApi, processPayment } from "../orders";
 import "./Cart.css";
 
 function Cart() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const user = localStorage.getItem("user");
 
     if (!user) {
-      alert("🔐 Please login first");
+      alert("Please login first");
       navigate("/login");
       return;
     }
@@ -22,45 +25,43 @@ function Cart() {
   const fetchCart = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:8002/cart");
-      const data = await response.json();
-      setCart(data);
+      const data = await getCart();
+      setCart(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error fetching cart:", err);
+      setCart([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const placeOrder = async () => {
+  const handlePlaceOrder = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8002/place-order", {
-        method: "POST"
-      });
-      const data = await response.json();
-      alert("✅ " + data.message);
+      const data = await placeOrder();
+      alert(data.message || "Order placed!");
       setCart([]);
-      fetchCart();
+      clearCart();
     } catch (err) {
-      alert("❌ Failed to place order");
+      alert("Failed to place order");
     }
   };
 
   const payNow = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8002/pay", {
-        method: "POST"
-      });
-      const data = await response.json();
-      alert("💳 " + data.message);
+      const data = await processPayment();
+      alert(data.message || "Payment successful");
     } catch (err) {
-      alert("❌ Payment failed");
+      alert("Payment failed");
     }
   };
 
-  const removeFromCart = (index) => {
-    const newCart = cart.filter((_, i) => i !== index);
-    setCart(newCart);
+  const handleRemoveFromCart = async (index) => {
+    try {
+      await removeFromCartApi(index);
+      await fetchCart();
+    } catch (err) {
+      console.error("Error removing item:", err);
+    }
   };
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.price || 0), 0);
@@ -97,7 +98,7 @@ function Cart() {
                   <p className="item-price">₹{item.price}</p>
                 </div>
                 <button
-                  onClick={() => removeFromCart(index)}
+                  onClick={() => handleRemoveFromCart(index)}
                   className="btn-remove"
                 >
                   ✕
@@ -124,7 +125,7 @@ function Cart() {
               <span>₹{totalPrice}</span>
             </div>
 
-            <button onClick={placeOrder} className="btn-place-order">
+            <button onClick={handlePlaceOrder} className="btn-place-order">
               📦 Place Order
             </button>
 
