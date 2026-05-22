@@ -1,57 +1,70 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useAuth } from "./AuthContext";
+import { getCart, addToCart as addToCartApi, removeFromCart as removeFromCartApi, clearCart as clearCartApi } from "./orders";
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
+  const { user } = useAuth();
   const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Load cart from localStorage on app start
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        localStorage.removeItem("cart");
-      }
+  const refreshCart = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setCart([]);
+      return;
+    }
+    try {
+      setLoading(true);
+      const data = await getCart();
+      setCart(Array.isArray(data) ? data : []);
+    } catch {
+      setCart([]);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    refreshCart();
+  }, [user, refreshCart]);
 
-  const addToCart = (product) => {
-    setCart([...cart, product]);
+  const addToCart = async (product) => {
+    await addToCartApi(product);
+    await refreshCart();
     return true;
   };
 
-  const removeFromCart = (index) => {
-    setCart(cart.filter((_, i) => i !== index));
+  const removeFromCart = async (index) => {
+    await removeFromCartApi(index);
+    await refreshCart();
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
+    await clearCartApi();
     setCart([]);
   };
 
   const getTotalPrice = () => {
-    return cart.reduce((sum, item) => sum + (item.price || 0), 0);
+    return cart.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
   };
 
   const getTotalItems = () => {
-    return cart.length;
+    return cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
   };
 
   return (
-    <CartContext.Provider 
-      value={{ 
-        cart, 
-        addToCart, 
-        removeFromCart, 
-        clearCart, 
-        getTotalPrice, 
-        getTotalItems 
+    <CartContext.Provider
+      value={{
+        cart,
+        loading,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        refreshCart,
+        getTotalPrice,
+        getTotalItems,
       }}
     >
       {children}

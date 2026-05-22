@@ -7,13 +7,14 @@ services:
     container_name: shopsphere-auth
     working_dir: /app
     volumes:
-      - ./authservice:/app
+      - .:/app
     ports:
       - "5000:5000"
     command: >
-      sh -c "pip install flask flask-cors pyjwt &&
-             python run.py"
+      sh -c "pip install -r backend/requirements.txt &&
+             python backend/auth_service/run.py"
     environment:
+      AUTH_HOST: 0.0.0.0
       FLASK_APP: run.py
       FLASK_ENV: development
     healthcheck:
@@ -28,14 +29,15 @@ services:
     container_name: shopsphere-products
     working_dir: /app
     volumes:
-      - ./productservice:/app
-      - product_db:/app
+      - .:/app
+      - product_db:/app/backend/product_service
     ports:
       - "8001:8001"
     command: >
-      sh -c "pip install fastapi uvicorn &&
-             python -m uvicorn main:app --host 0.0.0.0 --port 8001"
+      sh -c "pip install -r backend/requirements.txt &&
+             python backend/product_service/run.py"
     environment:
+      PRODUCT_HOST: 0.0.0.0
       PYTHONUNBUFFERED: 1
     depends_on:
       auth-service:
@@ -52,13 +54,14 @@ services:
     container_name: shopsphere-orders
     working_dir: /app
     volumes:
-      - ./orderservice:/app
+      - .:/app
     ports:
       - "8002:8002"
     command: >
-      sh -c "pip install fastapi uvicorn &&
-             python -m uvicorn main:app --host 0.0.0.0 --port 8002"
+      sh -c "pip install -r backend/requirements.txt &&
+             python backend/order_service/run.py"
     environment:
+      ORDER_HOST: 0.0.0.0
       PYTHONUNBUFFERED: 1
     depends_on:
       auth-service:

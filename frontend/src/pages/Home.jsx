@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import { useCart } from "../CartContext";
+import { getAllProducts } from "../products";
 import "./Home.css";
 
 function Home() {
@@ -8,6 +12,9 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cartMessage, setCartMessage] = useState("");
+  const { user } = useAuth();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts();
@@ -17,39 +24,29 @@ function Home() {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch("http://127.0.0.1:8001/products");
-      if (!response.ok) throw new Error("Fetch failed");
-      const data = await response.json();
+      const data = await getAllProducts();
       setProducts(data || []);
     } catch (err) {
-      setError("Failed to load products. Make sure product service is running.");
-      console.log("Error:", err);
+      setError("Failed to load products. Make sure the product service is running on port 8001.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const addToCart = async (product) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("🔐 Please login first!");
+  const handleAddToCart = async (product) => {
+    if (!user) {
+      alert("Please login first");
+      navigate("/login");
       return;
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8002/add-to-cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify(product)
-      });
-      await response.json();
-      setCartMessage(`✅ ${product.name} added to cart!`);
+      await addToCart(product);
+      setCartMessage(`${product.name} added to cart`);
       setTimeout(() => setCartMessage(""), 3000);
-    } catch (err) {
-      setCartMessage("❌ Failed to add to cart");
+    } catch {
+      setCartMessage("Failed to add to cart");
       setTimeout(() => setCartMessage(""), 3000);
     }
   };
@@ -72,35 +69,35 @@ function Home() {
     <div className="home-container">
       <div className="home-hero">
         <div className="hero-copy">
-          <span className="hero-badge">✨ Fresh drops this week</span>
-          <h1>Shop the things you love</h1>
-          <p>Curated tech, accessories & more — delivered fast.</p>
-        </div>
-        <div className="hero-cta">
-          <button className="btn-primary hero-button">Featured</button>
+          <span className="hero-badge">Fresh drops this week</span>
+          <h1>ShopSphere</h1>
+          <p>Electronics, fashion, skincare, beauty and healthcare products.</p>
         </div>
       </div>
 
       {error && <div className="error-banner">{error}</div>}
-      {cartMessage && <div className={`cart-message ${cartMessage.includes('✅') ? 'success' : 'error'}`}>{cartMessage}</div>}
+
+      {cartMessage && (
+        <div className={`cart-message ${cartMessage.includes("added") ? "success" : "error"}`}>
+          {cartMessage}
+        </div>
+      )}
 
       <div className="search-controls">
-        <div className="search-section">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          className="search-input"
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
         <div className="category-chips">
           {categories.map((category) => (
             <button
               key={category}
-              type="button"
-              className={`category-chip ${selectedCategory === category ? "active" : ""}`}
               onClick={() => setSelectedCategory(category)}
+              className={`category-chip ${selectedCategory === category ? "active" : ""}`}
             >
               {category}
             </button>
@@ -115,40 +112,34 @@ function Home() {
         </div>
       ) : (
         <div className="products-grid">
-          {filteredProducts && filteredProducts.length > 0 ? (
-            filteredProducts.map((p, i) => (
-              <div key={p.id || i} className="product-card">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((p) => (
+              <div key={p.id} className="product-card">
                 <div className="product-image">
-                  {p.image_url ? (
-                    <img
-                      src={p.image_url}
-                      alt={p.name}
-                      className="product-img"
-                      loading="lazy"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        e.target.nextSibling.style.display = "block";
-                      }}
-                    />
-                  ) : null}
-                  <div className="product-placeholder" style={{ display: p.image_url ? "none" : "flex" }}>
-                    📦
-                  </div>
-                  <span className="product-category-badge">{p.category || "Other"}</span>
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    className="product-img"
+                    onError={(e) => {
+                      e.target.src =
+                        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500";
+                    }}
+                  />
+                  <span className="product-category-badge">{p.category}</span>
                 </div>
+
                 <div className="product-info">
-                  <div className="product-heading">
-                    <h3 className="product-name">{p.name}</h3>
-                    <button className="favorite-button" type="button">♡</button>
+                  <h3 className="product-name">{p.name}</h3>
+                  <p className="product-description">{p.description}</p>
+                  <div className="product-extra">
+                    <p>⭐ {p.rating} ({p.reviews} reviews)</p>
+                    <p>🔥 {p.discount}</p>
+                    <p>📦 Only {p.stock} left</p>
                   </div>
-                  {p.description && <p className="product-description">{p.description}</p>}
                   <div className="product-meta">
                     <p className="product-price">₹{p.price}</p>
-                    <button
-                      onClick={() => addToCart(p)}
-                      className="btn-add-to-cart"
-                    >
-                      🛒 Add to Cart
+                    <button onClick={() => handleAddToCart(p)} className="btn-add-to-cart">
+                      🛒 Add To Cart
                     </button>
                   </div>
                 </div>
@@ -156,8 +147,7 @@ function Home() {
             ))
           ) : (
             <div className="no-products">
-              <p>😔 No products found</p>
-              {searchTerm && <p>Try a different search term</p>}
+              <p>No products found</p>
             </div>
           )}
         </div>

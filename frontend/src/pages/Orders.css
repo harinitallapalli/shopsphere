@@ -7,7 +7,7 @@
 
 .orders-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
 .orders-header h1 {
@@ -23,6 +23,48 @@
   font-size: 15px;
   margin-top: 8px;
   font-weight: 500;
+}
+
+.orders-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.overview-card {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.overview-num {
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a202c;
+}
+
+.overview-label {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.highlight-pending .overview-num {
+  color: #c05621;
+}
+
+.highlight-active .overview-num {
+  color: #2b6cb0;
+}
+
+.highlight-delivered .overview-num {
+  color: #276749;
 }
 
 .orders-loading {
@@ -120,16 +162,16 @@
 
 .order-card:hover {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
 }
 
 .order-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 16px;
   padding-bottom: 15px;
   border-bottom: 1px solid #e2e8f0;
+  gap: 12px;
 }
 
 .order-header h3 {
@@ -139,12 +181,110 @@
   margin: 0;
 }
 
+.order-date {
+  font-size: 13px;
+  color: #718096;
+  margin: 4px 0 0 0;
+}
+
 .order-status {
-  background: #dcfce7;
-  color: #166534;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-active {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-out {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge-delivered {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.tracking-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  background: #f7fafc;
+  padding: 12px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.tracking-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.tracking-code {
+  background: #edf2f7;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #2d3748;
+}
+
+.carrier {
+  color: #718096;
+  margin-left: auto;
+}
+
+.delivery-progress-wrap {
+  margin-bottom: 16px;
+}
+
+.delivery-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 6px;
+}
+
+.delivery-progress-track {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.delivery-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #48bb78);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.eta-text {
+  font-size: 12px;
+  color: #718096;
+  margin: 8px 0 0 0;
+}
+
+.delivered-text {
+  color: #276749;
   font-weight: 600;
 }
 
@@ -152,14 +292,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .order-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -180,7 +320,7 @@
 }
 
 .order-footer {
-  padding-top: 15px;
+  padding-top: 12px;
 }
 
 .order-total {
@@ -191,6 +331,7 @@
   padding: 12px 16px;
   border-radius: 8px;
   font-weight: 600;
+  margin-bottom: 12px;
 }
 
 .order-total span:first-child {
@@ -203,6 +344,140 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-size: 18px;
+}
+
+.order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.pay-block {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.payment-select,
+.payment-select-cart {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-right: 10px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.btn-pay-order {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.orders-action-error {
+  background: #fff5f5;
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.btn-pay-order:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-track-toggle {
+  padding: 8px 16px;
+  background: #edf2f7;
+  color: #4a5568;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-cancel-order {
+  padding: 8px 16px;
+  background: transparent;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.order-timeline {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.order-timeline h4 {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  color: #2d3748;
+}
+
+.order-timeline ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-event {
+  display: flex;
+  gap: 14px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.timeline-event:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  background: #667eea;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+  z-index: 1;
+}
+
+.timeline-body strong {
+  display: block;
+  font-size: 14px;
+  color: #1a202c;
+}
+
+.timeline-body p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #4a5568;
+}
+
+.timeline-meta {
+  font-size: 11px;
+  color: #a0aec0;
 }
 
 .btn-refresh-orders {
@@ -226,6 +501,10 @@
 }
 
 @media (max-width: 768px) {
+  .orders-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .orders-header h1 {
     font-size: 24px;
   }
@@ -237,11 +516,9 @@
   .order-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
   }
 
-  .order-status {
-    padding: 4px 10px;
-    font-size: 11px;
+  .carrier {
+    margin-left: 0;
   }
 }

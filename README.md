@@ -19,26 +19,21 @@ A full-stack microservices e-commerce application built with React, Flask, and F
 
 ### **Option 1: Local Development (Recommended)**
 
-**Terminal 1: Auth Service**
+**Terminal 1–3: Backend (from project root)**
 ```bash
-cd authservice
-pip install flask flask-cors pyjwt
-python run.py
+pip install -r backend/requirements.txt
+
+python backend/auth_service/run.py      # port 5000
+python backend/product_service/run.py   # port 8001
+python backend/order_service/run.py     # port 8002
 ```
 
-**Terminal 2: Product Service**
+Or start all backend services at once:
 ```bash
-cd productservice
-pip install fastapi uvicorn
-python -m uvicorn main:app --host 127.0.0.1 --port 8001
+python backend/start_backend.py
 ```
 
-**Terminal 3: Order Service**
-```bash
-cd orderservice
-pip install fastapi uvicorn
-python -m uvicorn main:app --host 127.0.0.1 --port 8002
-```
+See [backend/README.md](./backend/README.md) for API details.
 
 **Terminal 4: Frontend**
 ```bash

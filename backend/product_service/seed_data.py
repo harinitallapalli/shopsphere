@@ -1,0 +1,23 @@
+# Fallback seed when products.db is empty
+SAMPLE_PRODUCTS = [
+    {"name": "Laptop", "price": 50000, "description": "High-performance laptop", "category": "Electronics",
+     "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500", "rating": 4.8, "reviews": 2450, "discount": "15% OFF", "stock": 8},
+    {"name": "iPhone 15", "price": 75000, "description": "Latest flagship smartphone", "category": "Electronics",
+     "image_url": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500", "rating": 4.9, "reviews": 5321, "discount": "10% OFF", "stock": 5},
+    {"name": "Headphones", "price": 3500, "description": "Wireless noise-cancelling headphones", "category": "Audio",
+     "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500", "rating": 4.4, "reviews": 1150, "discount": "25% OFF", "stock": 23},
+    {"name": "Smartwatch", "price": 25000, "description": "Smart wearable device", "category": "Wearables",
+     "image_url": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500", "rating": 4.6, "reviews": 1870, "discount": "18% OFF", "stock": 10},
+    {"name": "Monitor", "price": 15000, "description": "4K UHD display monitor", "category": "Electronics",
+     "image_url": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500", "rating": 4.7, "reviews": 920, "discount": "12% OFF", "stock": 11},
+    {"name": "Keyboard", "price": 5000, "description": "Mechanical gaming keyboard", "category": "Peripherals",
+     "image_url": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500", "rating": 4.6, "reviews": 980, "discount": "20% OFF", "stock": 17},
+    {"name": "Mouse", "price": 1500, "description": "Wireless ergonomic mouse", "category": "Peripherals",
+     "image_url": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500", "rating": 4.5, "reviews": 850, "discount": "20% OFF", "stock": 15},
+    {"name": "Webcam", "price": 4000, "description": "1080p HD webcam with microphone", "category": "Peripherals",
+     "image_url": "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=500", "rating": 4.3, "reviews": 600, "discount": "15% OFF", "stock": 20},
+    {"name": "Nike Shoes", "price": 4500, "description": "Comfortable running shoes", "category": "Fashion",
+     "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500", "rating": 4.7, "reviews": 3110, "discount": "45% OFF", "stock": 7},
+    {"name": "Wireless Earbuds", "price": 2999, "description": "Noise cancellation earbuds", "category": "Electronics",
+     "image_url": "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=500", "rating": 4.8, "reviews": 9200, "discount": "50% OFF", "stock": 11},
+]

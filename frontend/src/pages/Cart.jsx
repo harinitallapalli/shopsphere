@@ -1,75 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../CartContext";
+import { placeOrder } from "../orders";
 import "./Cart.css";
 
 function Cart() {
-  const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { cart, loading, removeFromCart, clearCart, refreshCart, getTotalPrice } = useCart();
   const navigate = useNavigate();
+  const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    const user = localStorage.getItem("user");
+  const totalPrice = getTotalPrice();
 
-    if (!user) {
-      alert("🔐 Please login first");
-      navigate("/login");
-      return;
-    }
-
-    fetchCart();
-  }, [navigate]);
-
-  const fetchCart = async () => {
+  const handlePlaceOrder = async () => {
     try {
-      setLoading(true);
-      const response = await fetch("http://127.0.0.1:8002/cart");
-      const data = await response.json();
-      setCart(data);
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-    } finally {
-      setLoading(false);
+      setProcessing(true);
+      const data = await placeOrder();
+      await refreshCart();
+      navigate(`/checkout?orderId=${data.order_id}`);
+    } catch {
+      setProcessing(false);
     }
   };
-
-  const placeOrder = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8002/place-order", {
-        method: "POST"
-      });
-      const data = await response.json();
-      alert("✅ " + data.message);
-      setCart([]);
-      fetchCart();
-    } catch (err) {
-      alert("❌ Failed to place order");
-    }
-  };
-
-  const payNow = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8002/pay", {
-        method: "POST"
-      });
-      const data = await response.json();
-      alert("💳 " + data.message);
-    } catch (err) {
-      alert("❌ Payment failed");
-    }
-  };
-
-  const removeFromCart = (index) => {
-    const newCart = cart.filter((_, i) => i !== index);
-    setCart(newCart);
-  };
-
-  const totalPrice = cart.reduce((sum, item) => sum + (item.price || 0), 0);
 
   return (
     <div className="cart-container">
       <div className="cart-header">
         <h1>🛒 Shopping Cart</h1>
-        <p>{cart.length} item{cart.length !== 1 ? 's' : ''}</p>
+        <p>{cart.length} item{cart.length !== 1 ? "s" : ""}</p>
       </div>
 
       {loading ? (
@@ -82,7 +39,7 @@ function Cart() {
           <div className="empty-icon">🛍️</div>
           <h2>Your cart is empty</h2>
           <p>Start shopping to add items!</p>
-          <button onClick={() => navigate("/")} className="btn-continue-shopping">
+          <button onClick={() => navigate("/home")} className="btn-continue-shopping">
             ← Continue Shopping
           </button>
         </div>
@@ -90,16 +47,16 @@ function Cart() {
         <div className="cart-content">
           <div className="cart-items">
             {cart.map((item, index) => (
-              <div key={index} className="cart-item">
+              <div key={`${item.id}-${index}`} className="cart-item">
                 <div className="item-icon">🛍️</div>
                 <div className="item-details">
                   <h3>{item.name}</h3>
-                  <p className="item-price">₹{item.price}</p>
+                  <p className="item-price">
+                    ₹{item.price}
+                    {item.quantity > 1 ? ` × ${item.quantity}` : ""}
+                  </p>
                 </div>
-                <button
-                  onClick={() => removeFromCart(index)}
-                  className="btn-remove"
-                >
+                <button onClick={() => removeFromCart(index)} className="btn-remove">
                   ✕
                 </button>
               </div>
@@ -113,26 +70,33 @@ function Cart() {
             </div>
             <div className="summary-row">
               <span>Shipping</span>
-              <span>₹0</span>
-            </div>
-            <div className="summary-row">
-              <span>Tax</span>
-              <span>₹0</span>
+              <span>Free</span>
             </div>
             <div className="summary-total">
               <span>Total</span>
               <span>₹{totalPrice}</span>
             </div>
 
-            <button onClick={placeOrder} className="btn-place-order">
-              📦 Place Order
+            <button
+              onClick={() => navigate("/checkout")}
+              className="btn-pay-now"
+            >
+              💳 Proceed to Checkout
             </button>
 
-            <button onClick={payNow} className="btn-pay-now">
-              💳 Pay Now
+            <button
+              onClick={handlePlaceOrder}
+              disabled={processing}
+              className="btn-place-order"
+            >
+              {processing ? "Creating order..." : "📦 Place Order (Pay Later)"}
             </button>
 
-            <button onClick={() => navigate("/")} className="btn-continue">
+            <button onClick={clearCart} className="btn-continue">
+              Clear Cart
+            </button>
+
+            <button onClick={() => navigate("/home")} className="btn-continue">
               ← Continue Shopping
             </button>
           </div>

@@ -265,6 +265,23 @@
   box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
 }
 
+.payment-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  margin: 12px 0 6px 0;
+}
+
+.payment-select-cart {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
 .btn-continue {
   width: 100%;
   padding: 12px 20px;
