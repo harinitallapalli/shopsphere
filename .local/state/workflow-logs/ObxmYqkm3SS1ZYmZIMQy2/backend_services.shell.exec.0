@@ -1,0 +1,27 @@
+Starting ShopSphere backend services...
+Project root: /home/runner/workspace
+
+  -> Auth: /home/runner/workspace/.pythonlibs/bin/python /home/runner/workspace/backend/auth_service/run.py
+  -> Product: /home/runner/workspace/.pythonlibs/bin/python /home/runner/workspace/backend/product_service/run.py
+  -> Order: /home/runner/workspace/.pythonlibs/bin/python /home/runner/workspace/backend/order_service/run.py
+
+All services launched. Press Ctrl+C to stop.
+
+ * Serving Flask app 'backend.auth_service.app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+[33mPress CTRL+C to quit[0m
+[32mINFO[0m:     Started server process [[36m2067[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8001[0m (Press CTRL+C to quit)
+[32mINFO[0m:     Started server process [[36m2072[0m]
+[32mINFO[0m:     Waiting for application startup.
+[32mINFO[0m:     Application startup complete.
+[32mINFO[0m:     Uvicorn running on [1mhttp://127.0.0.1:8002[0m (Press CTRL+C to quit)
+[32mINFO[0m:     10.62.4.89:0 - "[1mGET /cart HTTP/1.1[0m" [32m200 OK[0m
+[32mINFO[0m:     10.62.215.12:0 - "[1mGET /cart HTTP/1.1[0m" [32m200 OK[0m
+[32mINFO[0m:     10.62.215.15:0 - "[1mGET /products HTTP/1.1[0m" [32m200 OK[0m
+[32mINFO[0m:     10.62.215.12:0 - "[1mGET /cart HTTP/1.1[0m" [32m200 OK[0m
+[32mINFO[0m:     10.62.215.15:0 - "[1mGET /products HTTP/1.1[0m" [32m200 OK[0m

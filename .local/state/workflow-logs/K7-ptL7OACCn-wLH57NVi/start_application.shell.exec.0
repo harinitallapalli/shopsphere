@@ -1,0 +1,119 @@
+
+> frontend@0.1.0 start
+> react-scripts start
+
+[1G[0K[HPM] Proxy created: /  -> http://127.0.0.1:5001
+[HPM] Proxy rewrite rule created: "^/auth-api" ~> ""
+[HPM] Proxy created: /  -> http://127.0.0.1:8001
+[HPM] Proxy rewrite rule created: "^/product-api" ~> ""
+[HPM] Proxy created: /  -> http://127.0.0.1:8002
+[HPM] Proxy rewrite rule created: "^/order-api" ~> ""
+(node:3746) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:3746) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[2J[3J[H[36mStarting the development server...[39m
+[36m[39m
+[2J[3J[H[32mCompiled successfully![39m
+
+You can now view [1mfrontend[22m in the browser.
+
+  [1mLocal:[22m            http://localhost:[1m5000[22m
+  [1mOn Your Network:[22m  http://172.24.0.2:[1m5000[22m
+
+Note that the development build is not optimized.
+To create a production build, use [36mnpm run build[39m.
+
+webpack compiled [1m[32msuccessfully[39m[22m
+[2J[3J[HCompiling...
+[2J[3J[H[31mFailed to compile.[39m
+[31m[39m
+SyntaxError: /home/runner/workspace/frontend/src/pages/Login.jsx: Expected corresponding JSX closing tag for <form>. (175:8)
+[0m [90m 173 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 174 |[39m           )}
+[31m[1m>[22m[39m[90m 175 |[39m         [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m     |[39m         [31m[1m^[22m[39m
+ [90m 176 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 177 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 178 |[39m   )[33m;[39m[0m
+[1m[31mERROR[39m[22m in [1m./src/pages/Login.jsx[39m[22m
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: /home/runner/workspace/frontend/src/pages/Login.jsx: Expected corresponding JSX closing tag for <form>. (175:8)
+
+[0m [90m 173 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 174 |[39m           )}
+[31m[1m>[22m[39m[90m 175 |[39m         [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m     |[39m         [31m[1m^[22m[39m
+ [90m 176 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 177 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 178 |[39m   )[33m;[39m[0m
+    at constructor (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:365:19)
+    at FlowParserMixin.raise (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:6616:19)
+    at FlowParserMixin.jsxParseElementAt (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4739:16)
+    at FlowParserMixin.jsxParseElementAt (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4710:32)
+    at FlowParserMixin.jsxParseElementAt (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4710:32)
+    at FlowParserMixin.jsxParseElement (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4761:17)
+    at FlowParserMixin.parseExprAtom (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4771:19)
+    at FlowParserMixin.parseExprSubscripts (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11098:23)
+    at FlowParserMixin.parseUpdate (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11083:21)
+    at FlowParserMixin.parseMaybeUnary (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11063:23)
+    at FlowParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10916:61)
+    at FlowParserMixin.parseExprOps (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10921:23)
+    at FlowParserMixin.parseMaybeConditional (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10898:23)
+    at FlowParserMixin.parseMaybeAssign (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10848:21)
+    at /home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:3510:39
+    at FlowParserMixin.tryParse (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:6924:20)
+    at FlowParserMixin.parseMaybeAssign (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:3510:18)
+    at /home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10817:39
+    at FlowParserMixin.allowInAnd (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12443:12)
+    at FlowParserMixin.parseMaybeAssignAllowIn (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10817:17)
+    at FlowParserMixin.parseMaybeAssignAllowInOrVoidPattern (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12510:17)
+    at FlowParserMixin.parseParenAndDistinguishExpression (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11692:28)
+    at FlowParserMixin.parseParenAndDistinguishExpression (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:3603:18)
+    at FlowParserMixin.parseExprAtom (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11348:23)
+    at FlowParserMixin.parseExprAtom (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:4776:20)
+    at FlowParserMixin.parseExprSubscripts (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11098:23)
+    at FlowParserMixin.parseUpdate (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11083:21)
+    at FlowParserMixin.parseMaybeUnary (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:11063:23)
+    at FlowParserMixin.parseMaybeUnaryOrPrivate (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10916:61)
+    at FlowParserMixin.parseExprOps (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10921:23)
+    at FlowParserMixin.parseMaybeConditional (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10898:23)
+    at FlowParserMixin.parseMaybeAssign (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10848:21)
+    at FlowParserMixin.parseMaybeAssign (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:3561:18)
+    at FlowParserMixin.parseExpressionBase (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10801:23)
+    at /home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10797:39
+    at FlowParserMixin.allowInAnd (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12438:16)
+    at FlowParserMixin.parseExpression (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:10797:17)
+    at FlowParserMixin.parseReturnStatement (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:13159:28)
+    at FlowParserMixin.parseStatementContent (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12815:21)
+    at FlowParserMixin.parseStatementLike (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12784:17)
+    at FlowParserMixin.parseStatementLike (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:2930:24)
+    at FlowParserMixin.parseStatementListItem (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12764:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:13333:61)
+    at FlowParserMixin.parseBlockBody (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:13326:10)
+    at FlowParserMixin.parseBlock (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:13314:10)
+    at FlowParserMixin.parseFunctionBody (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12117:24)
+    at FlowParserMixin.parseFunctionBody (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:2907:11)
+    at FlowParserMixin.parseFunctionBodyAndFinish (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:12103:10)
+    at FlowParserMixin.parseFunctionBodyAndFinish (/home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:2915:18)
+    at /home/runner/workspace/frontend/node_modules/@babel/parser/lib/index.js:13462:12
+
+[1m[31mERROR[39m[22m in [eslint] 
+src/pages/Login.jsx
+  [1mLine 175:8:[22m  Parsing error: Expected corresponding JSX closing tag for <form>. (175:8)
+
+webpack compiled with [1m[31m2 errors[39m[22m
+[2J[3J[HCompiling...
+[2J[3J[H[33mCompiled with warnings.[39m
+[33m[39m
+[eslint] 
+src/pages/Login.jsx
+  [1mLine 82:9:[22m  'handleKey' is assigned a value but never used  [33m[4mno-unused-vars[24m[39m
+
+Search for the [4m[33mkeywords[39m[24m to learn more about each warning.
+To ignore, add [36m// eslint-disable-next-line[39m to the line before.
+
+[1m[33mWARNING[39m[22m in [eslint] 
+src/pages/Login.jsx
+  [1mLine 82:9:[22m  'handleKey' is assigned a value but never used  [33m[4mno-unused-vars[24m[39m
+
+webpack compiled with [1m[33m1 warning[39m[22m
