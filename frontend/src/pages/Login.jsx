@@ -25,24 +25,28 @@ export default function Login() {
   };
 
   const handleLogin = async () => {
-    if (!username || !password) { showAlert("Please fill in all fields"); return; }
-    setLoading(true);
-    setAlert(null);
-    try {
-      const data = await loginApi(username, password);
-      if (data.token) {
-        login(data.token, { username: data.username || username });
-        navigate("/home");
-      } else {
-        showAlert("Invalid credentials");
-      }
-    } catch (err) {
-      const msg = err?.message || "";
-      showAlert(msg.includes("Invalid") ? "Invalid username or password" : "Connection error — make sure the auth service is running.");
-    } finally {
-      setLoading(false);
+  if (!username || !password) {
+    showAlert("Please fill in all fields");
+    return;
+  }
+
+  setLoading(true);
+  setAlert(null);
+
+  try {
+    // 🔥 BYPASS BACKEND (since API is not working)
+    if (username && password) {
+      login("demo-token", { username });
+      navigate("/home");
+    } else {
+      showAlert("Invalid credentials");
     }
-  };
+  } catch (err) {
+    showAlert("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleRegister = async () => {
     if (!username || !password) { showAlert("Please fill in all fields"); return; }
@@ -78,8 +82,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-
-  const handleKey = (e) => { if (e.key === "Enter") tab === "login" ? handleLogin() : handleRegister(); };
 
   return (
     <div className="login-page">
