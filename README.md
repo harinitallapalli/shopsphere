@@ -106,8 +106,7 @@ Password: demo123
 * Docker support for containerized execution
 
 ---
-
-## 🐳 Docker Support
+ 🐳 Docker Support
 docker-compose up
 
 Access at:
