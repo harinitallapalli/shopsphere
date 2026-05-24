@@ -108,11 +108,8 @@ Password: demo123
 ---
  🐳 Docker Support
 docker-compose up
-
 Access at:
-
 http://localhost:3000
----
 
 ## 📱 UI Features
 
